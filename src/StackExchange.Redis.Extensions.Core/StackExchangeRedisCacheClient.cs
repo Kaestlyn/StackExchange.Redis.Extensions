@@ -18,6 +18,15 @@ namespace StackExchange.Redis.Extensions.Core
 		private readonly ISerializer serializer;
 		private static readonly Encoding encoding = Encoding.UTF8;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StackExchangeRedisCacheClient"/> class
+        /// using the connection specified in the "RedisConnectionString" configuration setting.
+        /// </summary>
+        /// <param name="connectionMultiplexer">The connection multiplexer.</param>
+        /// <param name="serializer">The serializer.</param>
+        public StackExchangeRedisCacheClient( ISerializer serializer )
+            : this( null, serializer ) { }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StackExchangeRedisCacheClient"/> class.
 		/// </summary>
@@ -80,9 +89,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the key is present into Redis. Othwerwise False
 		/// </returns>
-		public bool Exists(string key)
+		public bool Exists(string key, CommandFlags flags = CommandFlags.None )
 		{
-			return db.KeyExists(key);
+			return db.KeyExists(key, flags);
 		}
 
 		/// <summary>
@@ -92,9 +101,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the key is present into Redis. Othwerwise False
 		/// </returns>
-		public Task<bool> ExistsAsync(string key)
+		public Task<bool> ExistsAsync(string key, CommandFlags flags = CommandFlags.None )
 		{
-			return db.KeyExistsAsync(key);
+			return db.KeyExistsAsync(key, flags);
 		}
 
 		/// <summary>
@@ -104,9 +113,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the key has removed. Othwerwise False
 		/// </returns>
-		public bool Remove(string key)
+		public bool Remove(string key, CommandFlags flags = CommandFlags.None )
 		{
-			return db.KeyDelete(key);
+			return db.KeyDelete(key, flags);
 		}
 
 		/// <summary>
@@ -116,18 +125,18 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the key has removed. Othwerwise False
 		/// </returns>
-		public Task<bool> RemoveAsync(string key)
+		public Task<bool> RemoveAsync(string key, CommandFlags flags = CommandFlags.None )
 		{
-			return db.KeyDeleteAsync(key);
+			return db.KeyDeleteAsync(key, flags );
 		}
 
 		/// <summary>
 		/// Removes all specified keys from Redis Database
 		/// </summary>
 		/// <param name="keys">The key.</param>
-		public void RemoveAll(IEnumerable<string> keys)
+		public void RemoveAll(IEnumerable<string> keys, CommandFlags flags = CommandFlags.None )
 		{
-			keys.ForEach(x => Remove(x));
+			keys.ForEach(x => Remove(x, flags ) );
 		}
 
 		/// <summary>
@@ -135,9 +144,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// </summary>
 		/// <param name="keys">The key.</param>
 		/// <returns></returns>
-		public Task RemoveAllAsync(IEnumerable<string> keys)
+		public Task RemoveAllAsync(IEnumerable<string> keys, CommandFlags flags = CommandFlags.None )
 		{
-			return keys.ForEachAsync(RemoveAsync);
+			return keys.ForEachAsync( k => RemoveAsync(k, flags ) );
 		}
 
 		/// <summary>
@@ -148,9 +157,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// Null if not present, otherwise the instance of T.
 		/// </returns>
-		public T Get<T>(string key) where T : class
+		public T Get<T>(string key, CommandFlags flags = CommandFlags.None ) where T : class
 		{
-			var valueBytes = db.StringGet(key);
+			var valueBytes = db.StringGet(key, flags );
 
 			if (!valueBytes.HasValue)
 			{
@@ -168,9 +177,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// Null if not present, otherwise the instance of T.
 		/// </returns>
-		public async Task<T> GetAsync<T>(string key) where T : class
+		public async Task<T> GetAsync<T>(string key, CommandFlags flags = CommandFlags.None ) where T : class
 		{
-			var valueBytes = await db.StringGetAsync(key);
+			var valueBytes = await db.StringGetAsync(key, flags );
 
 			if (!valueBytes.HasValue)
 			{
@@ -189,11 +198,11 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public bool Add<T>(string key, T value) where T : class
+		public bool Add<T>(string key, T value, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			var entryBytes = serializer.Serialize(value);
 
-			return db.StringSet(key, entryBytes);
+			return db.StringSet(key, entryBytes, flags: flags );
 		}
 
 		/// <summary>
@@ -205,11 +214,11 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public async Task<bool> AddAsync<T>(string key, T value) where T : class
+		public async Task<bool> AddAsync<T>(string key, T value, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			var entryBytes = await serializer.SerializeAsync(value);
 
-			return await db.StringSetAsync(key, entryBytes);
+			return await db.StringSetAsync(key, entryBytes, flags: flags );
 		}
 
 		/// <summary>
@@ -221,9 +230,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public bool Replace<T>(string key, T value) where T : class
+		public bool Replace<T>(string key, T value, CommandFlags flags = CommandFlags.None ) where T : class
 		{
-			return Add(key, value);
+			return Add(key, value, flags );
 		}
 
 		/// <summary>
@@ -235,9 +244,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public Task<bool> ReplaceAsync<T>(string key, T value) where T : class
+		public Task<bool> ReplaceAsync<T>(string key, T value, CommandFlags flags = CommandFlags.None ) where T : class
 		{
-			return  AddAsync(key, value);
+			return  AddAsync(key, value, flags );
 		}
 
 		/// <summary>
@@ -250,12 +259,12 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public bool Add<T>(string key, T value, DateTimeOffset expiresAt) where T : class
+		public bool Add<T>(string key, T value, DateTimeOffset expiresAt, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			var entryBytes = serializer.Serialize(value);
 			var expiration = expiresAt.Subtract(DateTimeOffset.Now);
 
-			return db.StringSet(key, entryBytes, expiration);
+			return db.StringSet(key, entryBytes, expiration, flags: flags );
 		}
 
 		/// <summary>
@@ -268,12 +277,12 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public async Task<bool> AddAsync<T>(string key, T value, DateTimeOffset expiresAt) where T : class
+		public async Task<bool> AddAsync<T>(string key, T value, DateTimeOffset expiresAt, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			var entryBytes = await serializer.SerializeAsync(value);
 			var expiration = expiresAt.Subtract(DateTimeOffset.Now);
 
-			return await db.StringSetAsync(key, entryBytes, expiration);
+			return await db.StringSetAsync(key, entryBytes, expiration, flags: flags );
 		}
 
 		/// <summary>
@@ -286,9 +295,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public bool Replace<T>(string key, T value, DateTimeOffset expiresAt) where T : class
+		public bool Replace<T>(string key, T value, DateTimeOffset expiresAt, CommandFlags flags = CommandFlags.None ) where T : class
 		{
-			return Add(key, value, expiresAt);
+			return Add(key, value, expiresAt, flags );
 		}
 
 		/// <summary>
@@ -301,9 +310,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public Task<bool> ReplaceAsync<T>(string key, T value, DateTimeOffset expiresAt) where T : class
+		public Task<bool> ReplaceAsync<T>(string key, T value, DateTimeOffset expiresAt, CommandFlags flags = CommandFlags.None ) where T : class
 		{
-			return AddAsync(key, value, expiresAt);
+			return AddAsync(key, value, expiresAt, flags );
 		}
 
 		/// <summary>
@@ -316,11 +325,11 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public bool Add<T>(string key, T value, TimeSpan expiresIn) where T : class
+		public bool Add<T>(string key, T value, TimeSpan expiresIn, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			var entryBytes = serializer.Serialize(value);
 
-			return db.StringSet(key, entryBytes, expiresIn);
+			return db.StringSet(key, entryBytes, expiresIn, flags: flags );
 		}
 
 		/// <summary>
@@ -333,11 +342,11 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public async Task<bool> AddAsync<T>(string key, T value, TimeSpan expiresIn) where T : class
+		public async Task<bool> AddAsync<T>(string key, T value, TimeSpan expiresIn, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			var entryBytes = await serializer.SerializeAsync(value);
 
-			return await db.StringSetAsync(key, entryBytes, expiresIn);
+			return await db.StringSetAsync(key, entryBytes, expiresIn, flags: flags );
 		}
 
 		/// <summary>
@@ -350,9 +359,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public bool Replace<T>(string key, T value, TimeSpan expiresIn) where T : class
+		public bool Replace<T>(string key, T value, TimeSpan expiresIn, CommandFlags flags = CommandFlags.None ) where T : class
 		{
-			return Add(key, value, expiresIn);
+			return Add(key, value, expiresIn, flags );
 		}
 
 		/// <summary>
@@ -365,9 +374,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		public Task<bool> ReplaceAsync<T>(string key, T value, TimeSpan expiresIn) where T : class
+		public Task<bool> ReplaceAsync<T>(string key, T value, TimeSpan expiresIn, CommandFlags flags = CommandFlags.None ) where T : class
 		{
-			return AddAsync(key, value, expiresIn);
+			return AddAsync(key, value, expiresIn, flags );
 		}
 
 		/// <summary>
@@ -379,13 +388,13 @@ namespace StackExchange.Redis.Extensions.Core
 		/// Empty list if there are no results, otherwise the instance of T.
 		/// If a cache key is not present on Redis the specified object into the returned Dictionary will be null
 		/// </returns>
-		public IDictionary<string, T> GetAll<T>(IEnumerable<string> keys) where T : class
+		public IDictionary<string, T> GetAll<T>(IEnumerable<string> keys, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			var keysList = keys.ToList();
 			var redisKeys = new RedisKey[keysList.Count];
 			var sb = CreateLuaScriptForMget(redisKeys, keysList);
 
-			RedisResult[] redisResults = (RedisResult[])db.ScriptEvaluate(sb, redisKeys);
+			RedisResult[] redisResults = (RedisResult[])db.ScriptEvaluate(sb, redisKeys, flags: flags );
 
 			var result = new Dictionary<string, T>();
 
@@ -413,13 +422,13 @@ namespace StackExchange.Redis.Extensions.Core
 		/// Empty list if there are no results, otherwise the instance of T.
 		/// If a cache key is not present on Redis the specified object into the returned Dictionary will be null
 		/// </returns>
-		public async Task<IDictionary<string, T>> GetAllAsync<T>(IEnumerable<string> keys) where T : class
+		public async Task<IDictionary<string, T>> GetAllAsync<T>(IEnumerable<string> keys, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			var keysList = keys.ToList();
 			RedisKey[] redisKeys = new RedisKey[keysList.Count];
 			var sb = CreateLuaScriptForMget(redisKeys, keysList);
 
-			var redisResults = (RedisResult[])await db.ScriptEvaluateAsync(sb, redisKeys);
+			var redisResults = (RedisResult[])await db.ScriptEvaluateAsync(sb, redisKeys, flags: flags );
 
 			var result = new Dictionary<string, T>();
 
@@ -442,13 +451,13 @@ namespace StackExchange.Redis.Extensions.Core
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="items">The items.</param>
-		public bool AddAll<T>(IList<Tuple<string, T>> items) where T : class
+		public bool AddAll<T>(IList<Tuple<string, T>> items, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			RedisKey[] redisKeys = new RedisKey[items.Count];
 			RedisValue[] redisValues = new RedisValue[items.Count];
 			var sb = CreateLuaScriptForMset(redisKeys, redisValues, items);
 
-			var redisResults = db.ScriptEvaluate(sb, redisKeys, redisValues);
+			var redisResults = db.ScriptEvaluate(sb, redisKeys, redisValues, flags: flags );
 
 			return redisResults.ToString() == "OK";
 		}
@@ -459,13 +468,13 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <typeparam name="T"></typeparam>
 		/// <param name="items">The items.</param>
 		/// <returns></returns>
-		public async Task<bool> AddAllAsync<T>(IList<Tuple<string, T>> items) where T : class
+		public async Task<bool> AddAllAsync<T>(IList<Tuple<string, T>> items, CommandFlags flags = CommandFlags.None ) where T : class
 		{
 			RedisKey[] redisKeys = new RedisKey[items.Count];
 			RedisValue[] redisValues = new RedisValue[items.Count];
 			var sb = CreateLuaScriptForMset(redisKeys, redisValues, items);
 
-			var redisResults = await db.ScriptEvaluateAsync(sb, redisKeys, redisValues);
+			var redisResults = await db.ScriptEvaluateAsync(sb, redisKeys, redisValues, flags: flags );
 
 			return redisResults.ToString() == "OK";
 		}
@@ -476,9 +485,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <param name="memberName">Name of the member.</param>
 		/// <param name="key">The key.</param>
 		/// <returns></returns>
-		public bool SetAdd(string memberName, string key)
-		{
-			return db.SetAdd(memberName, key);
+		public bool SetAdd(string memberName, string key, CommandFlags flags = CommandFlags.None )
+        {
+			return db.SetAdd(memberName, key, flags );
 		}
 
 		/// <summary>
@@ -487,9 +496,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <param name="memberName">Name of the member.</param>
 		/// <param name="key">The key.</param>
 		/// <returns></returns>
-		public Task<bool> SetAddAsync(string memberName, string key)
+		public Task<bool> SetAddAsync(string memberName, string key, CommandFlags flags = CommandFlags.None )
 		{
-			return db.SetAddAsync(memberName, key);
+			return db.SetAddAsync(memberName, key, flags );
 		}
 
 		/// <summary>
@@ -498,9 +507,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <param name="memberName">Name of the member.</param>
 		/// <returns></returns>
 		/// <exception cref="System.NotImplementedException"></exception>
-		public string[] SetMember(string memberName)
+		public string[] SetMember(string memberName, CommandFlags flags = CommandFlags.None )
 		{
-			return db.SetMembers(memberName).Select(x => x.ToString()).ToArray();
+			return db.SetMembers(memberName, flags ).Select(x => x.ToString()).ToArray();
 		}
 
 		/// <summary>
@@ -508,9 +517,9 @@ namespace StackExchange.Redis.Extensions.Core
 		/// </summary>
 		/// <param name="memberName">Name of the member.</param>
 		/// <returns></returns>
-		public async Task<string[]> SetMemberAsync(string memberName)
+		public async Task<string[]> SetMemberAsync(string memberName, CommandFlags flags = CommandFlags.None )
 		{
-			return (await db.SetMembersAsync(memberName)).Select(x => x.ToString()).ToArray();
+			return (await db.SetMembersAsync(memberName, flags ) ).Select(x => x.ToString()).ToArray();
 		}
 
 		/// <summary>
@@ -526,7 +535,7 @@ namespace StackExchange.Redis.Extensions.Core
 		///		if you want to return all keys that end with "myCacheKey" uses "*myCacheKey"
 		/// </example>
 		/// <returns>A list of cache keys retrieved from Redis database</returns>
-		public IEnumerable<string> SearchKeys(string pattern)
+		public IEnumerable<string> SearchKeys(string pattern, CommandFlags flags = CommandFlags.None )
 		{
 			var keys = new HashSet<RedisKey>();
 
@@ -534,7 +543,7 @@ namespace StackExchange.Redis.Extensions.Core
 
 			foreach (var endpoint in endPoints)
 			{
-				var dbKeys = db.Multiplexer.GetServer(endpoint).Keys(pattern: pattern);
+				var dbKeys = db.Multiplexer.GetServer(endpoint).Keys(pattern: pattern, flags: flags );
 
 				foreach (var dbKey in dbKeys)
 				{
@@ -561,41 +570,41 @@ namespace StackExchange.Redis.Extensions.Core
 		///		if you want to return all keys that end with "myCacheKey" uses "*myCacheKey"
 		/// </example>
 		/// <returns>A list of cache keys retrieved from Redis database</returns>
-		public Task<IEnumerable<string>> SearchKeysAsync(string pattern)
+		public Task<IEnumerable<string>> SearchKeysAsync(string pattern, CommandFlags flags = CommandFlags.None )
 		{
-			return Task.Factory.StartNew(() => SearchKeys(pattern));
+			return Task.Factory.StartNew(() => SearchKeys(pattern, flags ) );
 		}
 
-		public void FlushDb()
+		public void FlushDb( CommandFlags flags = CommandFlags.None )
+        {
+			var endPoints = db.Multiplexer.GetEndPoints();
+
+			foreach (var endpoint in endPoints)
+			{
+				db.Multiplexer.GetServer(endpoint).FlushDatabase( flags: flags );
+			}
+		}
+
+		public async Task FlushDbAsync( CommandFlags flags = CommandFlags.None )
 		{
 			var endPoints = db.Multiplexer.GetEndPoints();
 
 			foreach (var endpoint in endPoints)
 			{
-				db.Multiplexer.GetServer(endpoint).FlushDatabase();
+				await db.Multiplexer.GetServer(endpoint).FlushDatabaseAsync( flags: flags );
 			}
 		}
 
-		public async Task FlushDbAsync()
-		{
-			var endPoints = db.Multiplexer.GetEndPoints();
-
-			foreach (var endpoint in endPoints)
-			{
-				await db.Multiplexer.GetServer(endpoint).FlushDatabaseAsync();
-			}
-		}
-
-		public Dictionary<string, string> GetInfo()
-		{
-			var info = db.ScriptEvaluate("return redis.call('INFO')").ToString();
+		public Dictionary<string, string> GetInfo( CommandFlags flags = CommandFlags.None )
+        {
+			var info = db.ScriptEvaluate("return redis.call('INFO')", flags: flags ).ToString();
 
 			return ParseInfo(info);
 		}
 
-		public async Task<Dictionary<string, string>> GetInfoAsync()
-		{
-			var info = (await db.ScriptEvaluateAsync("return redis.call('INFO')")).ToString();
+		public async Task<Dictionary<string, string>> GetInfoAsync( CommandFlags flags = CommandFlags.None )
+        {
+			var info = (await db.ScriptEvaluateAsync("return redis.call('INFO')", flags: flags ) ).ToString();
 
 			return ParseInfo(info);
 		}

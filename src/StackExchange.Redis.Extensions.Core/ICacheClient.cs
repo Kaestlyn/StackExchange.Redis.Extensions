@@ -22,40 +22,40 @@ namespace StackExchange.Redis.Extensions.Core
 		/// </summary>
 		/// <param name="key">The cache key.</param>
 		/// <returns>True if the key is present into Redis. Othwerwise False</returns>
-		bool Exists(string key);
+		bool Exists(string key, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Verify that the specified cache key exists
 		/// </summary>
 		/// <param name="key">The cache key.</param>
 		/// <returns>True if the key is present into Redis. Othwerwise False</returns>
-		Task<bool> ExistsAsync(string key);
+		Task<bool> ExistsAsync(string key, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Removes the specified key from Redis Database
 		/// </summary>
 		/// <param name="key">The key.</param>
 		/// <returns>True if the key has removed. Othwerwise False</returns>
-		bool Remove(string key);
+		bool Remove(string key, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Removes the specified key from Redis Database
 		/// </summary>
 		/// <param name="key">The key.</param>
 		/// <returns>True if the key has removed. Othwerwise False</returns>
-		Task<bool> RemoveAsync(string key);
+		Task<bool> RemoveAsync(string key, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Removes all specified keys from Redis Database
 		/// </summary>
 		/// <param name="keys">The key.</param>
-		void RemoveAll(IEnumerable<string> keys);
+		void RemoveAll(IEnumerable<string> keys, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Removes all specified keys from Redis Database
 		/// </summary>
 		/// <param name="keys">The key.</param>
-		Task RemoveAllAsync(IEnumerable<string> keys);
+		Task RemoveAllAsync(IEnumerable<string> keys, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Get the object with the specified key from Redis database
@@ -63,7 +63,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <typeparam name="T">The type of the expected object</typeparam>
 		/// <param name="key">The cache key.</param>
 		/// <returns>Null if not present, otherwise the instance of T.</returns>
-		T Get<T>(string key) where T : class;
+		T Get<T>(string key, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Get the object with the specified key from Redis database
@@ -71,7 +71,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <typeparam name="T">The type of the expected object</typeparam>
 		/// <param name="key">The cache key.</param>
 		/// <returns>Null if not present, otherwise the instance of T.</returns>
-		Task<T> GetAsync<T>(string key) where T : class;
+		Task<T> GetAsync<T>(string key, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Adds the specified instance to the Redis database.
@@ -80,7 +80,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <param name="key">The cache key.</param>
 		/// <param name="value">The instance of T.</param>
 		/// <returns>True if the object has been added. Otherwise false</returns>
-		bool Add<T>(string key, T value) where T : class;
+		bool Add<T>(string key, T value, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Adds the specified instance to the Redis database.
@@ -89,7 +89,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <param name="key">The cache key.</param>
 		/// <param name="value">The instance of T.</param>
 		/// <returns>True if the object has been added. Otherwise false</returns>
-		Task<bool> AddAsync<T>(string key, T value) where T : class;
+		Task<bool> AddAsync<T>(string key, T value, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Replaces the object with specified key into Redis database.
@@ -100,7 +100,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		bool Replace<T>(string key, T value) where T : class;
+		bool Replace<T>(string key, T value, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Replaces the object with specified key into Redis database.
@@ -111,7 +111,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		Task<bool> ReplaceAsync<T>(string key, T value) where T : class;
+		Task<bool> ReplaceAsync<T>(string key, T value, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Adds the specified instance to the Redis database.
@@ -123,7 +123,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		bool Add<T>(string key, T value, DateTimeOffset expiresAt) where T : class;
+		bool Add<T>(string key, T value, DateTimeOffset expiresAt, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Adds the specified instance to the Redis database.
@@ -135,7 +135,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		Task<bool> AddAsync<T>(string key, T value, DateTimeOffset expiresAt) where T : class;
+		Task<bool> AddAsync<T>(string key, T value, DateTimeOffset expiresAt, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Replaces the object with specified key into Redis database.
@@ -147,7 +147,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		bool Replace<T>(string key, T value, DateTimeOffset expiresAt) where T : class;
+		bool Replace<T>(string key, T value, DateTimeOffset expiresAt, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Replaces the object with specified key into Redis database.
@@ -159,7 +159,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		Task<bool> ReplaceAsync<T>(string key, T value, DateTimeOffset expiresAt) where T : class;
+		Task<bool> ReplaceAsync<T>(string key, T value, DateTimeOffset expiresAt, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Adds the specified instance to the Redis database.
@@ -171,7 +171,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		bool Add<T>(string key, T value, TimeSpan expiresIn) where T : class;
+		bool Add<T>(string key, T value, TimeSpan expiresIn, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Adds the specified instance to the Redis database.
@@ -183,7 +183,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		Task<bool> AddAsync<T>(string key, T value, TimeSpan expiresIn) where T : class;
+		Task<bool> AddAsync<T>(string key, T value, TimeSpan expiresIn, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Replaces the object with specified key into Redis database.
@@ -195,7 +195,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		bool Replace<T>(string key, T value, TimeSpan expiresIn) where T : class;
+		bool Replace<T>(string key, T value, TimeSpan expiresIn, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Replaces the object with specified key into Redis database.
@@ -207,7 +207,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// <returns>
 		/// True if the object has been added. Otherwise false
 		/// </returns>
-		Task<bool> ReplaceAsync<T>(string key, T value, TimeSpan expiresIn) where T : class;
+		Task<bool> ReplaceAsync<T>(string key, T value, TimeSpan expiresIn, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Get the objects with the specified keys from Redis database with one roundtrip
@@ -218,7 +218,7 @@ namespace StackExchange.Redis.Extensions.Core
 		/// Empty list if there are no results, otherwise the instance of T.
 		/// If a cache key is not present on Redis the specified object into the returned Dictionary will be null
 		/// </returns>
-		IDictionary<string, T> GetAll<T>(IEnumerable<string> keys) where T : class;
+		IDictionary<string, T> GetAll<T>(IEnumerable<string> keys, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Get the objects with the specified keys from Redis database with a single roundtrip
@@ -229,47 +229,47 @@ namespace StackExchange.Redis.Extensions.Core
 		/// Empty list if there are no results, otherwise the instance of T.
 		/// If a cache key is not present on Redis the specified object into the returned Dictionary will be null
 		/// </returns>
-		Task<IDictionary<string, T>> GetAllAsync<T>(IEnumerable<string> keys) where T : class;
+		Task<IDictionary<string, T>> GetAllAsync<T>(IEnumerable<string> keys, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Add the objects with the specified keys to Redis database with a single roundtrip
 		/// </summary>
 		/// <typeparam name="T">The type of the expected object</typeparam>
 		/// <param name="items">The items.</param>
-		bool AddAll<T>(IList<Tuple<string, T>> items) where T : class;
+		bool AddAll<T>(IList<Tuple<string, T>> items, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Add the objects with the specified keys to Redis database with a single roundtrip
 		/// </summary>
 		/// <typeparam name="T">The type of the expected object</typeparam>
 		/// <param name="items">The items.</param>
-		Task<bool> AddAllAsync<T>(IList<Tuple<string, T>> items) where T : class;
+		Task<bool> AddAllAsync<T>(IList<Tuple<string, T>> items, CommandFlags flags = CommandFlags.None ) where T : class;
 
 		/// <summary>
 		/// Run SADD command <see cref="http://redis.io/commands/sadd"/>
 		/// </summary>
 		/// <param name="memberName">Name of the member.</param>
 		/// <param name="key">The key.</param>
-		bool SetAdd(string memberName, string key);
+		bool SetAdd(string memberName, string key, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Run SADD command <see cref="http://redis.io/commands/sadd"/>
 		/// </summary>
 		/// <param name="memberName">Name of the member.</param>
 		/// <param name="key">The key.</param>
-		Task<bool> SetAddAsync(string memberName, string key);
+		Task<bool> SetAddAsync(string memberName, string key, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Run SMEMBERS command <see cref="http://redis.io/commands/SMEMBERS"/>
 		/// </summary>
 		/// <param name="memberName">Name of the member.</param>
-		string[] SetMember(string memberName);
+		string[] SetMember(string memberName, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Run SMEMBERS command <see cref="http://redis.io/commands/SMEMBERS"/>
 		/// </summary>
 		/// <param name="memberName">Name of the member.</param>
-		Task<string[]> SetMemberAsync(string memberName);
+		Task<string[]> SetMemberAsync(string memberName, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Searches the keys from Redis database
@@ -284,7 +284,7 @@ namespace StackExchange.Redis.Extensions.Core
 		///		if you want to return all keys that end with "myCacheKey" uses "*myCacheKey"
 		/// </example>
 		/// <returns>A list of cache keys retrieved from Redis database</returns>
-		IEnumerable<string> SearchKeys(string pattern);
+		IEnumerable<string> SearchKeys(string pattern, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Searches the keys from Redis database
@@ -299,29 +299,29 @@ namespace StackExchange.Redis.Extensions.Core
 		///		if you want to return all keys that end with "myCacheKey" uses "*myCacheKey"
 		/// </example>
 		/// <returns>A list of cache keys retrieved from Redis database</returns>
-		Task<IEnumerable<string>> SearchKeysAsync(string pattern);
+		Task<IEnumerable<string>> SearchKeysAsync(string pattern, CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Flushes the database.
 		/// </summary>
-		void FlushDb();
+		void FlushDb( CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Flushes the database asynchronous.
 		/// </summary>
 		/// <returns></returns>
-		Task FlushDbAsync();
+		Task FlushDbAsync( CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Gets the information about redis.
 		/// More info <see cref="http://redis.io/commands/INFO"/>
 		/// </summary>
-		Dictionary<string, string> GetInfo();
+		Dictionary<string, string> GetInfo( CommandFlags flags = CommandFlags.None );
 
 		/// <summary>
 		/// Gets the information about redis.
 		/// More info <see cref="http://redis.io/commands/INFO"/>
 		/// </summary>
-		Task<Dictionary<string, string>> GetInfoAsync();
+		Task<Dictionary<string, string>> GetInfoAsync( CommandFlags flags = CommandFlags.None );
 	}
 }
